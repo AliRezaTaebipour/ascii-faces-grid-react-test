@@ -1,17 +1,20 @@
+//Fetch function for fetching data
 const Fetch = async ({ page, sort }) =>
   await fetch(
     `/api/products?_page=${page}&_limit=19&_sort=${sort}`
   ).then(response => response.json());
+//store ads
 let selectedAds = [];
 class App extends React.Component {
   state = {
-    products: [],
-    nextProducts: [],
-    sort: "",
-    page: 1,
-    endOfProducts: false,
-    loading: true
+    products: [], //store all products
+    nextProducts: [], //store next products
+    sort: "", //selected sort option
+    page: 1, //page number for fetch function
+    endOfProducts: false, //show where products end.
+    loading: true //show loading when fetching
   };
+  //Get products from server
   getProducts = async first => {
     const { sort, page } = this.state;
     try {
@@ -21,15 +24,17 @@ class App extends React.Component {
       });
       if (response.length !== 0) {
         if (first) {
+          //first response
           await this.setState({
             products: response,
-            loading: false,
             page: 2
           });
         } else {
+          //other response
           await this.setState({ nextProducts: response, page: page + 1 });
         }
       } else {
+        //end of products
         this.setState({
           endOfProducts: true
         });
@@ -37,23 +42,36 @@ class App extends React.Component {
     } catch (err) {
       console.log(err);
     }
-    await this.setState({ fetchIsDone: true });
   };
   async componentDidMount() {
+    //handle scroll feature
     window.addEventListener("scroll", this.handleScroll);
+    //first show of products
     await this.getProducts(true);
+    //pre-emptively fetch
     await this.getProducts(false);
+    this.setState({ loading: false });
   }
   componentWillUnmount() {
+    //handle scroll feature
     window.removeEventListener("scroll", this.handleScroll);
   }
   handleSort = async activeSort => {
+    //reload all states and get sorted data
     const { sort } = this.state;
     await this.setState({
       page: 1,
-      sort: activeSort !== sort ? activeSort : ""
+      sort: activeSort !== sort ? activeSort : "", //check if its selected or not
+      loading: true,
+      products: [],
+      endOfProducts: false,
+      nextProducts: []
     });
-    this.getProducts(true);
+    //like the componentDidMount
+    await this.getProducts(true);
+    await this.getProducts(false);
+    this.setState({ loading: false });
+    //empty store ads
     selectedAds = [];
   };
   showProducts = () => {
@@ -61,6 +79,7 @@ class App extends React.Component {
     const productList = [];
     let i = 0;
     let adIndex = 1;
+    //create products
     for (const product of products) {
       i++;
       productList.push(
@@ -72,16 +91,12 @@ class App extends React.Component {
           </div>
           <div className="product-content">
             <p>
-              <span className="content-title">ID :</span>
-              <span className="content-value">{product.id}</span>
+              <span className="content-title">Size :</span>
+              <span className="content-value">{product.size}</span>
             </p>
             <p>
               <span className="content-title">Price :</span>
               <span className="content-value">{product.price / 100}</span>
-            </p>
-            <p>
-              <span className="content-title">Size :</span>
-              <span className="content-value">{product.size}</span>
             </p>
             <p>
               <span className="content-title">Date :</span>
@@ -93,10 +108,13 @@ class App extends React.Component {
         </div>
       );
       if (i % 20 === 0 && products.length > 19) {
+        //check ads
         let imgSrc;
         if (selectedAds[adIndex]) {
+          //if ad is selected before don't get new one
           imgSrc = selectedAds[adIndex];
         } else {
+          //get new ad
           imgSrc = this.adID();
           selectedAds[adIndex] = imgSrc;
         }
@@ -136,19 +154,22 @@ class App extends React.Component {
     }
   };
   handleScroll = async () => {
+    //infinity scroll
     const { nextProducts, products, endOfProducts, loading } = this.state;
     if (
       document.documentElement.scrollTop +
         document.documentElement.clientHeight >=
         document.documentElement.scrollHeight &&
-      !endOfProducts &&
-      !loading
+      !loading &&
+      !endOfProducts
     ) {
+      //add new products
       await this.setState({
-        loading: true,
         products: products.concat(nextProducts),
-        nextProducts: []
+        // nextProducts: [],
+        loading: true
       });
+      //get new products
       await this.getProducts(false);
       await this.setState({
         loading: false
@@ -156,8 +177,10 @@ class App extends React.Component {
     }
   };
   adID = () => {
-    let ad = Math.floor(Math.random() * 10);
+    //get random add id
+    let ad = Math.floor(Math.random() * 10); // ads from 0-9 and 0-99999999 are repeted and have same results
     while (selectedAds[selectedAds.length - 1] === ad) {
+      //prevent same ad twice in a row
       ad = Math.floor(Math.random() * 10);
     }
     return ad;

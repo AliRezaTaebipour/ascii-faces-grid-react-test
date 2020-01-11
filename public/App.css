@@ -1,6 +1,7 @@
 body {
   font-family: "Oswald";
   background: #f3f3f3;
+  overflow-x: hidden;
 }
 header {
   text-align: center;
@@ -18,7 +19,7 @@ header h1 {
   margin-bottom: 2%;
 }
 .container {
-  width: 100%;
+  width: 98%;
   padding-right: 15px;
   padding-left: 15px;
   margin: 30px auto;
@@ -82,6 +83,8 @@ li.each-sort {
   padding: 0px 20px;
   border-radius: 3px;
   cursor: pointer;
+  width: 20px;
+  text-align: center;
 }
 li.each-sort.activeSort {
   background: #e03c3c;
@@ -143,5 +146,15 @@ li.each-sort.activeSort {
     width: 100%;
     display: block;
     margin: 0 0 10px;
+  }
+  ul.sort-group {
+    width: 100%;
+  }
+  li.each-sort {
+    float: none;
+    margin: 10px auto;
+  }
+  .sort-div {
+    text-align: center;
   }
 }

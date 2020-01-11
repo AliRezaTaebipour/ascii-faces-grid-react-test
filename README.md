@@ -7,6 +7,7 @@ Please read the instructions and FAQ below before beginning.
 ### How do I start the app?
 
 ```sh
+npm install
 npm start
 open the browser http://localhost:3000
 ```

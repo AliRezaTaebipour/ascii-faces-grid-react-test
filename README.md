@@ -7,6 +7,8 @@ Please read the instructions and FAQ below before beginning.
 ### How do I start the app?
 
 ```sh
+git clone https://github.com/AliRezaTaebipour/ascii-faces-grid-react-test.git
+cd ascii-faces-grid-react-test
 npm install
 npm start
 open the browser http://localhost:3000

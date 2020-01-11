@@ -107,7 +107,7 @@ class App extends React.Component {
           </div>
         </div>
       );
-      if (i % 20 === 0 && products.length > 19) {
+      if (i % 20 === 0) {
         //check ads
         let imgSrc;
         if (selectedAds[adIndex]) {
